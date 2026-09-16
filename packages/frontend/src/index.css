@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply bg-cream text-cocoa font-sans antialiased;
+  overscroll-behavior-y: contain;
+}
+
+::selection {
+  background: #f9a8d4;
+  color: #4a2c35;
+}
+
+:focus-visible {
+  outline: 2px solid #c14a6e;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-base font-semibold transition-all duration-200 cursor-pointer select-none disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-primary text-white shadow-soft hover:bg-primary-dark active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply btn bg-white text-cocoa border border-primary-pale shadow-card hover:border-primary-soft active:scale-[0.98];
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-cocoa-soft hover:bg-primary-pale hover:text-cocoa min-h-[44px];
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 active:scale-[0.98];
+  }
+  .card {
+    @apply rounded-2xl bg-white p-5 shadow-card border border-primary-pale/60;
+  }
+  .input {
+    @apply w-full min-h-[48px] rounded-xl border border-cocoa-muted/30 bg-white px-4 py-3 text-base text-cocoa placeholder:text-cocoa-muted/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-semibold text-cocoa;
+  }
+  .helper {
+    @apply mt-1 text-xs text-cocoa-soft;
+  }
+  .error-text {
+    @apply mt-1 text-xs font-medium text-red-600;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+  .skeleton {
+    @apply animate-pulse rounded-xl bg-cream-dark;
+  }
+}

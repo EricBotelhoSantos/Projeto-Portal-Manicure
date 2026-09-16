@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ana-nail-db
+    restart: always
+    environment:
+      POSTGRES_USER: ana_user
+      POSTGRES_PASSWORD: ana_pass_123
+      POSTGRES_DB: ana_nail_designer
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db_data:

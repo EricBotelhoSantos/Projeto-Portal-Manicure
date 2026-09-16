@@ -1,0 +1,17 @@
+{
+  "name": "ana-paula-nail-designer",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/backend",
+    "packages/frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev -w @ana-paula-nail/backend",
+    "dev:frontend": "npm run dev -w @ana-paula-nail/frontend",
+    "build": "npm run build -w @ana-paula-nail/backend && npm run build -w @ana-paula-nail/frontend",
+    "db:push": "npm run db:push -w @ana-paula-nail/backend",
+    "db:seed": "npm run db:seed -w @ana-paula-nail/backend",
+    "db:studio": "npm run db:studio -w @ana-paula-nail/backend"
+  }
+}

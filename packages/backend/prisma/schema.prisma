@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String         @id @default(cuid())
+  name        String
+  email       String         @unique
+  phone       String?
+  password    String
+  role        Role           @default(CLIENT)
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  // Relations
+  appointments Appointment[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+model Service {
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  price          Decimal  @db.Decimal(10, 2)
+  durationMinutes Int     @map("duration_minutes")
+  image          String?
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  appointments Appointment[]
+
+  @@map("services")
+}
+
+model Appointment {
+  id                 String        @id @default(cuid())
+  clientId           String        @map("client_id")
+  serviceId          String        @map("service_id")
+  date               DateTime      @db.Date
+  startTime          DateTime      @map("start_time")
+  endTime            DateTime      @map("end_time")
+  notes              String?
+  photoUrl           String?       @map("photo_url")
+  status             AppointmentStatus @default(PENDING)
+  cancellationReason String?       @map("cancellation_reason")
+  cancelledBy        String?       @map("cancelled_by")
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+  confirmedAt        DateTime?     @map("confirmed_at")
+  cancelledAt        DateTime?     @map("cancelled_at")
+
+  // Relations
+  client   User     @relation(fields: [clientId], references: [id])
+  service  Service  @relation(fields: [serviceId], references: [id])
+
+  @@map("appointments")
+  @@index([date])
+  @@index([clientId])
+  @@index([status])
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED_CLIENT
+  CANCELLED_ADMIN
+  COMPLETED
+}
+
+model Availability {
+  id          String   @id @default(cuid())
+  dayOfWeek   Int      @map("day_of_week") // 0 = Sunday, 1 = Monday, ... 6 = Saturday
+  startTime   String   @map("start_time") // "08:00"
+  endTime     String   @map("end_time")   // "18:00"
+  breakStart  String?  @map("break_start") // "12:00"
+  breakEnd    String?  @map("break_end")   // "13:00"
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("availability")
+}
+
+model BlockedSlot {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  startTime String   @map("start_time")
+  endTime   String   @map("end_time")
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("blocked_slots")
+  @@index([date])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  title     String
+  message   String
+  type      NotificationType
+  read      Boolean   @default(false)
+  link      String?
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+  @@index([userId])
+  @@index([read])
+}
+
+enum NotificationType {
+  APPOINTMENT_NEW
+  APPOINTMENT_CONFIRMED
+  APPOINTMENT_CANCELLED
+  APPOINTMENT_REMINDER
+}
